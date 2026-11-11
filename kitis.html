@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>КИТиС — Колледж информационных технологий и строительства</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --orange:#F57F17; --orange-d:#E9730B;
+  --blue:#1F7BC6;  --blue-d:#2A63AD;
+  --gray:#90A4AE;  --gray-d:#607D8B; --dark:#37474F; --darker:#263238;
+  --ink:#212529; --line:#DDE3E8; --bg:#fff; --bg2:#F4F6F8;
+  --r:2px;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --shadow:6px 6px 0 rgba(96,125,139,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px;scroll-behavior:smooth}
+html.fs-m{font-size:18px} html.fs-l{font-size:20px}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.55}
+[hidden]{display:none!important}
+::selection{background:rgba(245,127,23,.25)}
+a{color:var(--blue);text-decoration:none}
+a:hover{color:var(--blue-d)}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+.mono{font-family:var(--mono)}
+.nowrap{white-space:nowrap}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.skip{position:absolute;left:-9999px;top:0;background:var(--orange);color:var(--ink);padding:8px 14px;z-index:200}
+.skip:focus{left:8px}
+
+/* ---------- topbar ---------- */
+.topbar{background:var(--darker);color:#CFD8DC;font-size:.8rem}
+.topbar a{color:#CFD8DC}
+.topbar a:hover{color:var(--orange)}
+.topbar-in{display:flex;align-items:center;gap:20px;min-height:38px;flex-wrap:wrap}
+.topbar .spacer{flex:1}
+.topbar-sveden{text-decoration:underline;text-underline-offset:3px}
+#fontBtn{background:transparent;border:1px solid #546E7A;color:#ECEFF1;border-radius:var(--r);padding:2px 10px;font-family:var(--mono);font-size:.75rem}
+#fontBtn:hover{border-color:var(--orange);color:var(--orange)}
+
+/* ---------- header ---------- */
+.header{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid var(--line)}
+.header-in{display:flex;align-items:center;gap:26px;min-height:74px}
+.brand{display:flex;align-items:center;gap:12px;color:var(--ink)}
+.brand-mark{width:42px;height:42px;background:var(--orange);color:#fff;font-weight:800;font-size:1.3rem;display:grid;place-items:center;border-radius:var(--r);flex:none}
+.brand-name{font-weight:800;font-size:1.25rem;letter-spacing:.02em;line-height:1.1}
+.brand-sub{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-d)}
+.nav{display:flex;align-items:center;gap:4px;margin-left:auto}
+.nav>a,.dd-btn{display:block;padding:10px 12px;font-size:.9rem;font-weight:600;color:var(--ink);background:none;border:none;border-bottom:2px solid transparent;border-radius:0}
+.nav>a:hover,.dd-btn:hover{color:var(--blue)}
+.nav>a.active,.dd-btn.active{color:var(--ink);border-bottom-color:var(--orange)}
+.dd{position:relative}
+.dd-menu{display:none;position:absolute;right:0;top:calc(100% + 6px);min-width:280px;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:6px 0;z-index:120}
+.dd.open .dd-menu{display:block}
+.dd-menu a{display:block;padding:9px 16px;font-size:.875rem;color:var(--ink)}
+.dd-menu a:hover{background:var(--bg2);color:var(--blue)}
+.m-only{display:none}
+.burger{display:none;margin-left:auto;background:none;border:1px solid var(--line);border-radius:var(--r);width:42px;height:42px;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.burger span{display:block;width:18px;height:2px;background:var(--ink)}
+
+/* ---------- buttons / chips ---------- */
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:var(--r);font-weight:700;font-size:.9rem;border:1px solid transparent;transition:transform .12s,box-shadow .12s,background .12s}
+.btn-primary{background:var(--orange);color:var(--ink);box-shadow:4px 4px 0 rgba(38,50,56,.18)}
+.btn-primary:hover{background:var(--orange-d);color:var(--ink);transform:translate(-1px,-1px);box-shadow:5px 5px 0 rgba(38,50,56,.18)}
+.btn-primary:active{transform:translate(1px,1px);box-shadow:none}
+.btn-ghost{background:#fff;border-color:#B9C4CB;color:var(--ink)}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+.btn-sm{padding:9px 14px;font-size:.8rem}
+.chip{display:inline-block;font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;padding:4px 9px;border:1px solid var(--line);border-radius:var(--r);background:#fff;color:var(--gray-d)}
+.tag{display:inline-block;font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;padding:3px 8px;border-radius:var(--r)}
+.tag-o{background:#FDEBD3;color:#9A5B00}
+.tag-b{background:#E3F0FA;color:var(--blue-d)}
+.tag-g{background:#ECEFF1;color:var(--dark)}
+
+/* ---------- hero ---------- */
+.hero{background:var(--bg2);background-image:linear-gradient(rgba(144,164,174,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(144,164,174,.13) 1px,transparent 1px);background-size:32px 32px;border-bottom:1px solid var(--line)}
+.hero-in{display:grid;grid-template-columns:1.25fr .75fr;gap:48px;padding:64px 24px 0;align-items:start}
+.hero h1{font-size:clamp(2.1rem,4.6vw,3.4rem);font-weight:800;line-height:1.06;letter-spacing:-.02em;margin:18px 0 16px}
+.hero h1 em{font-style:normal;color:var(--orange-d);text-decoration:underline;text-decoration-thickness:4px;text-underline-offset:6px}
+.lead{font-size:1.05rem;color:#4A5A63;max-width:56ch}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:28px}
+.hero-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:24px}
+.hero-card h3{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gray-d);margin-bottom:14px}
+.hero-card .phone{font-family:var(--mono);font-size:1.25rem;font-weight:700;color:var(--ink);display:block;margin-bottom:12px}
+.hero-card .phone:hover{color:var(--blue)}
+.hc-row{display:flex;gap:10px;font-size:.875rem;color:#4A5A63;padding:7px 0;border-top:1px solid var(--bg2)}
+.hc-row b{color:var(--ink);font-weight:600}
+.hero-card .btn{width:100%;justify-content:center;margin-top:16px}
+.hero-card .more{display:block;text-align:center;margin-top:12px;font-size:.8rem;font-family:var(--mono)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink);margin-top:52px}
+.stat{padding:22px 18px 30px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:none}
+.stat b{display:block;font-family:var(--mono);font-size:2rem;font-weight:700;line-height:1.1}
+.stat span{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gray-d)}
+
+/* ---------- alert bar ---------- */
+.alertbar{background:var(--orange);color:var(--ink)}
+.alertbar-in{display:flex;align-items:center;gap:14px;padding:11px 24px;flex-wrap:wrap;font-size:.9rem;font-weight:600}
+.alert-tag{background:var(--ink);color:#fff;font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:var(--r)}
+.alertbar a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;font-weight:700;margin-left:auto}
+.alertbar a:hover{color:#000}
+
+/* ---------- sections ---------- */
+.sec{padding:56px 0}
+.sec-alt{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:26px}
+.sec-index{font-family:var(--mono);color:var(--orange-d);font-weight:700;font-size:.9rem}
+.sec-head h2{font-size:clamp(1.5rem,2.6vw,2rem);font-weight:800;letter-spacing:-.01em}
+.sec-all{margin-left:auto;font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
+
+/* quick tiles */
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.tile{display:block;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;color:var(--ink);transition:transform .12s,box-shadow .12s,border-color .12s}
+.tile:hover{border-color:var(--orange);transform:translate(-2px,-2px);box-shadow:var(--shadow);color:var(--ink)}
+.tile .num{font-family:var(--mono);font-size:.7rem;color:var(--gray-d)}
+.tile b{display:block;font-size:1rem;font-weight:700;margin:10px 0 14px;line-height:1.3}
+.tile .arr{font-family:var(--mono);color:var(--orange-d);font-weight:700}
+
+/* news */
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.ncard{display:block;background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;color:var(--ink);transition:transform .12s,box-shadow .12s,border-color .12s}
+.ncard:hover{border-color:var(--orange);transform:translate(-2px,-2px);box-shadow:var(--shadow);color:var(--ink)}
+.ph{height:150px;border-bottom:1px solid var(--line)}
+.ph-a{background-color:#EDF2F5;background-image:linear-gradient(rgba(31,123,198,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(31,123,198,.15) 1px,transparent 1px);background-size:22px 22px}
+.ph-b{background:repeating-linear-gradient(45deg,#F5F7F8 0 14px,rgba(245,127,23,.18) 14px 28px)}
+.ph-c{background-color:#F5F7F8;background-image:radial-gradient(rgba(96,125,139,.4) 1.5px,transparent 1.5px);background-size:18px 18px}
+.ncard-body{padding:16px 18px 20px}
+.ncard-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ncard-meta time{font-family:var(--mono);font-size:.72rem;color:var(--gray-d)}
+.ncard h3{font-size:1rem;font-weight:700;line-height:1.4}
+
+/* today widget */
+.today{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.today-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 18px;border-bottom:2px solid var(--ink)}
+.today-head .date{font-family:var(--mono);font-size:.8rem;color:var(--gray-d);text-transform:capitalize}
+.today-head select{margin-left:auto}
+.today-foot{padding:12px 18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.75rem}
+
+/* lists */
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.lrow{display:flex;gap:16px;padding:13px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.lrow time{font-family:var(--mono);font-size:.75rem;color:var(--gray-d);min-width:46px}
+.lrow a{color:var(--ink);font-weight:600;font-size:.92rem}
+.lrow a:hover{color:var(--blue)}
+.erow{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);align-items:center}
+.edate{flex:none;width:58px;height:58px;border:1px solid var(--line);border-radius:var(--r);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.edate b{font-family:var(--mono);font-size:1.2rem;line-height:1}
+.edate span{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;color:var(--gray-d)}
+.erow b{display:block;font-size:.95rem}
+.erow small{color:var(--gray-d);font-size:.8rem}
+
+/* about */
+.about-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:start}
+.quote{border-left:4px solid var(--orange);padding-left:22px;font-size:1.05rem;color:#3A474E}
+.director{display:flex;align-items:center;gap:14px;margin-top:22px}
+.avatar{width:54px;height:54px;border-radius:var(--r);background:var(--gray-d);color:#fff;display:grid;place-items:center;font-family:var(--mono);font-weight:700}
+.director b{display:block;font-size:.95rem}
+.director span{font-size:.8rem;color:var(--gray-d)}
+.facts{background:#fff;border:1px solid var(--line);border-radius:var(--r)}
+.facts div{display:flex;justify-content:space-between;gap:14px;padding:13px 18px;border-bottom:1px solid var(--line);font-size:.875rem}
+.facts div:last-child{border-bottom:none}
+.facts span{color:var(--gray-d)}
+.facts b{font-weight:600;text-align:right}
+
+/* contacts */
+.c-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.c-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.c-card h4{font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.09em;color:var(--gray-d);margin-bottom:8px}
+.c-card p,.c-card a{font-size:.95rem;font-weight:600;color:var(--ink)}
+.c-card a:hover{color:var(--blue)}
+.map{height:240px;border:1px solid var(--line);border-radius:var(--r);background-color:#EDF2F5;background-image:linear-gradient(rgba(144,164,174,.25) 1px,transparent 1px),linear-gradient(90deg,rgba(144,164,174,.25) 1px,transparent 1px);background-size:28px 28px;display:grid;place-items:center}
+.map .chip{background:#fff;color:var(--ink);border-color:var(--gray);font-size:.75rem;padding:8px 14px}
+
+/* ---------- schedule page ---------- */
+.pagehead{padding:36px 0 8px}
+.crumb{font-family:var(--mono);font-size:.72rem;color:var(--gray-d);margin-bottom:10px}
+.crumb a{color:var(--gray-d)}
+.crumb a:hover{color:var(--blue)}
+.pagehead-row{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.pagehead h1{font-size:clamp(1.7rem,3vw,2.3rem);font-weight:800;letter-spacing:-.01em}
+.pagehead-row .btn{margin-left:auto}
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--line);margin-top:22px;flex-wrap:wrap}
+.tab{padding:12px 18px;font-family:var(--mono);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gray-d);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--ink);border-bottom-color:var(--orange);font-weight:700}
+.sched-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0 0}
+.sched-bar label{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gray-d)}
+select,input[type="search"]{font-family:inherit;font-size:.9rem;padding:10px 12px;border:1px solid #B9C4CB;border-radius:var(--r);background:#fff;color:var(--ink)}
+select{min-width:280px;max-width:100%}
+input[type="search"]{min-width:220px}
+select:focus,input:focus{border-color:var(--blue);outline:none}
+.seg{display:inline-flex;border:1px solid #B9C4CB;border-radius:var(--r);overflow:hidden}
+.seg button{padding:9px 14px;font-family:var(--mono);font-size:.72rem;background:#fff;border:none;color:var(--gray-d)}
+.seg button+button{border-left:1px solid #B9C4CB}
+.seg button.active{background:var(--gray-d);color:#fff}
+.daytabs{display:flex;gap:6px;flex-wrap:wrap}
+.daytab{width:44px;height:40px;font-family:var(--mono);font-size:.8rem;background:#fff;border:1px solid #B9C4CB;border-radius:var(--r);color:var(--ink)}
+.daytab:hover{border-color:var(--blue);color:var(--blue)}
+.daytab.active{background:var(--orange);border-color:var(--orange);font-weight:700;color:var(--ink)}
+.sched-meta{font-family:var(--mono);font-size:.75rem;color:var(--gray-d);margin:16px 0 10px}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:#fff}
+table{width:100%;border-collapse:collapse;min-width:680px}
+th{font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gray-d);text-align:left;padding:11px 14px;background:var(--bg2);border-bottom:2px solid var(--line)}
+td{padding:12px 14px;border-bottom:1px solid var(--line);font-size:.9rem;vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#FAFBFC}
+td.subj{font-weight:600}
+.room{display:inline-block;background:#ECEFF1;border-radius:var(--r);padding:2px 8px;font-size:.75rem}
+.wchip{font-family:var(--mono);font-size:.62rem;color:var(--blue-d);background:#E3F0FA;border-radius:var(--r);padding:2px 6px;vertical-align:middle}
+td.empty{text-align:center;color:var(--gray-d);padding:30px;font-size:.8rem}
+.demo-note{font-family:var(--mono);font-size:.7rem;color:var(--gray-d);margin:14px 0 64px}
+#bellsPanel{margin-top:18px}
+#bellsPanel .tblwrap{max-width:620px}
+#bellsPanel table{min-width:0}
+
+/* ---------- stub ---------- */
+.stub-frame{border:1px dashed #B9C4CB;border-radius:var(--r);min-height:340px;display:grid;place-items:center;background:var(--bg2);margin:22px 0 72px}
+.stub-inner{text-align:center;color:var(--gray)}
+.stub-inner svg{display:block;margin:0 auto 12px}
+.stub-inner span{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gray-d)}
+
+/* ---------- footer ---------- */
+.footer{background:var(--darker);color:#B0BEC5;margin-top:auto}
+.footer-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1.2fr;gap:36px;padding:48px 24px 0}
+.footer h4{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:#fff;margin-bottom:14px}
+.footer a{display:block;color:#B0BEC5;font-size:.875rem;padding:4px 0}
+.footer a:hover{color:var(--orange)}
+.footer .fbrand{display:flex;align-items:center;gap:12px;color:#fff;margin-bottom:14px}
+.footer .fbrand .brand-name{font-size:1.15rem}
+.footer p{font-size:.85rem;max-width:34ch}
+.footer address{font-style:normal;font-size:.875rem;line-height:1.9}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.14);margin-top:40px;padding:18px 24px;display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem}
+.footer-bottom .spacer{flex:1}
+.footer-bottom a{display:inline;padding:0}
+
+/* ---------- responsive ---------- */
+@media (max-width:1080px){
+  .hero-in{grid-template-columns:1fr;gap:32px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(2){border-right:none}
+  .stat{border-bottom:1px solid var(--line)}
+  .stat:nth-child(3),.stat:nth-child(4){border-bottom:none}
+  .quick{grid-template-columns:repeat(2,1fr)}
+  .news-grid{grid-template-columns:repeat(2,1fr)}
+  .c-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:980px){
+  .burger{display:flex}
+  .header-cta{display:none}
+  .nav{display:none;position:absolute;left:0;right:0;top:100%;background:#fff;border-bottom:2px solid var(--ink);flex-direction:column;align-items:stretch;padding:10px 24px 18px;gap:0}
+  .nav.open{display:flex}
+  .nav>a,.dd-btn{padding:12px 4px;border-bottom:1px solid var(--bg2);text-align:left;width:100%}
+  .nav>a.active,.dd-btn.active{border-bottom-color:var(--bg2);color:var(--orange-d)}
+  .dd-menu{position:static;box-shadow:none;border:none;border-left:2px solid var(--orange);margin:4px 0 8px 8px;min-width:0}
+  .m-only{display:block}
+  .topbar-sveden{display:none}
+  .cols2,.about-grid{grid-template-columns:1fr;gap:36px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  .news-grid{grid-template-columns:1fr}
+  .topbar-in{gap:12px}
+  .topbar .addr{display:none}
+  .hero-in{padding-top:44px}
+  .sec{padding:44px 0}
+  select{min-width:100%}
+  .today-head select{margin-left:0;width:100%}
+}
+@media (max-width:520px){
+  .quick{grid-template-columns:1fr}
+  .c-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;scroll-behavior:auto!important}
+}
+@media print{
+  .topbar,.header,.footer,.alertbar,.no-print{display:none!important}
+  .page{display:none!important}
+  #page-schedule{display:block!important}
+  .tblwrap{overflow:visible;border-color:#000}
+  th,td{border-color:#000!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">К содержанию</a>
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <span class="addr mono">Калининград · ул. Горького, 166</span>
+    <a href="tel:+74012916106" class="mono">+7 (4012) 91-61-06</a>
+    <a href="mailto:info@kitis.ru" class="mono">info@kitis.ru</a>
+    <span class="spacer"></span>
+    <a href="#/sveden" class="topbar-sveden">Сведения об образовательной организации</a>
+    <button id="fontBtn" title="Размер шрифта" aria-label="Изменить размер шрифта">А+</button>
+  </div>
+</div>
+
+<header class="header">
+  <div class="wrap header-in">
+    <a class="brand" href="#/">
+      <span class="brand-mark">К</span>
+      <span>
+        <span class="brand-name">КИТиС</span><br>
+        <span class="brand-sub">IT · строительство · Калининград</span>
+      </span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Основная навигация">
+      <a href="#/" data-route="home">Главная</a>
+      <a href="#/abitur" data-route="abitur">Абитуриенту</a>
+      <a href="#/schedule" data-route="schedule">Расписание</a>
+      <a href="#/" data-scroll="about">О колледже</a>
+      <a href="#/" data-scroll="contacts">Контакты</a>
+      <div class="dd" id="dd">
+        <button class="dd-btn" id="ddBtn" aria-haspopup="true">Ещё ▾</button>
+        <div class="dd-menu">
+          <a href="#/career" data-route="career">Центр карьеры</a>
+          <a href="#/copp" data-route="copp">ЦОПП</a>
+          <a href="#/monitoring" data-route="monitoring">Аккредитационный мониторинг</a>
+          <a href="#/diary" data-route="diary">Дневник «Моя школа»</a>
+          <a href="#/video" data-route="video">Видео</a>
+          <a href="#/photo" data-route="photo">Фотогалерея</a>
+          <a href="#/calendar" data-route="calendar">Календарь</a>
+          <a href="#/resources" data-route="resources">Электронные ресурсы</a>
+        </div>
+      </div>
+      <a class="m-only" href="#/sveden">Сведения об образовательной организации</a>
+    </nav>
+    <a class="btn btn-primary btn-sm header-cta" href="#/apply">Подать заявку</a>
+    <button class="burger" id="burger" aria-label="Меню" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ================= HOME ================= -->
+<section class="page" id="page-home">
+
+  <div class="hero">
+    <div class="wrap hero-in">
+      <div>
+        <span class="chip">ГБУ КО ПОО · Колледж информационных технологий и строительства</span>
+        <h1>Образование, <em>доступное</em> каждому</h1>
+        <p class="lead">Готовим IT-специалистов и строителей в Калининграде: бюджетные места, практика у партнёров, диплом государственного образца.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#/apply">Подать заявку →</a>
+          <a class="btn btn-ghost" href="#/schedule">Расписание занятий</a>
+        </div>
+      </div>
+      <aside class="hero-card">
+        <h3>Приёмная комиссия</h3>
+        <a class="phone" href="tel:+74012916106">+7 (4012) 91-61-06</a>
+        <div class="hc-row"><span>Адрес</span><b>ул. Горького, 166</b></div>
+        <div class="hc-row"><span>Часы</span><b>Пн–Пт · 9:00–16:00</b></div>
+        <div class="hc-row"><span>Почта</span><b>info@kitis.ru</b></div>
+        <a class="btn btn-primary" href="#/apply">Заполнить заявку</a>
+        <a class="more" href="#/abitur">Профессии и специальности →</a>
+      </aside>
+    </div>
+    <div class="wrap">
+      <div class="stats">
+        <div class="stat"><b>390</b><span>бюджетных мест</span></div>
+        <div class="stat"><b>1996</b><span>год основания</span></div>
+        <div class="stat"><b>2</b><span>отделения: IT и строительство</span></div>
+        <div class="stat"><b>3г10м</b><span>обучение после 9 класса</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alertbar">
+    <div class="wrap alertbar-in">
+      <span class="alert-tag">Главное</span>
+      <span>День открытых дверей — 14 ноября, актовый зал</span>
+      <a href="#/apply">Записаться →</a>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="wrap">
+      <div class="quick">
+        <a class="tile" href="#/schedule" data-tab-link="groups"><span class="num">01</span><b>Расписание занятий</b><span class="arr">→</span></a>
+        <a class="tile" href="#/schedule" data-tab-link="bells"><span class="num">02</span><b>Расписание звонков</b><span class="arr">→</span></a>
+        <a class="tile" href="#/diary"><span class="num">03</span><b>Дневник «Моя школа»</b><span class="arr">→</span></a>
+        <a class="tile" href="#/apply"><span class="num">04</span><b>Подать заявку</b><span class="arr">→</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec sec-alt" id="news">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-index">01</span><h2>Новости</h2><a class="sec-all" href="#/news">Все новости →</a></div>
+      <div class="news-grid">
+        <a class="ncard" href="#/news">
+          <div class="ph ph-a"></div>
+          <div class="ncard-body">
+            <div class="ncard-meta"><span class="tag tag-o">Приём</span><time>12.11.2026</time></div>
+            <h3>Приёмная кампания — 2026: даты, документы, льготы</h3>
+          </div>
+        </a>
+        <a class="ncard" href="#/news">
+          <div class="ph ph-b"></div>
+          <div class="ncard-body">
+            <div class="ncard-meta"><span class="tag tag-g">Чемпионат</span><time>06.11.2026</time></div>
+            <h3>Студенты КИТиС — в финале чемпионата «Профессионалы»</h3>
+          </div>
+        </a>
+        <a class="ncard" href="#/news">
+          <div class="ph ph-c"></div>
+          <div class="ncard-body">
+            <div class="ncard-meta"><span class="tag tag-b">Событие</span><time>28.10.2026</time></div>
+            <h3>Открыта регистрация на хакатон колледжа</h3>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" id="rasp">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-index">02</span><h2>Расписание на сегодня</h2><a class="sec-all" href="#/schedule">Полное расписание →</a></div>
+      <div class="today">
+        <div class="today-head">
+          <span class="date" id="homeDate"></span>
+          <select id="homeGroup" aria-label="Группа"></select>
+        </div>
+        <div class="tblwrap" style="border:none;border-radius:0">
+          <table style="min-width:520px">
+            <thead><tr><th>Время</th><th>Дисциплина</th><th>Кабинет</th></tr></thead>
+            <tbody id="homeBody"></tbody>
+          </table>
+        </div>
+        <div class="today-foot"><a href="#/schedule" data-tab-link="teachers">По преподавателям</a> · <a href="#/schedule" data-tab-link="bells">Звонки</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec sec-alt">
+    <div class="wrap cols2">
+      <div>
+        <div class="sec-head"><span class="sec-index">03</span><h2>Объявления</h2><a class="sec-all" href="#/announcements">Все →</a></div>
+        <div class="lrow"><time>12.11</time><a href="#/announcements">Изменения в расписании групп ИС-231 и СС-221</a></div>
+        <div class="lrow"><time>10.11</time><a href="#/announcements">Выдача студенческих билетов первокурсникам</a></div>
+        <div class="lrow"><time>05.11</time><a href="#/announcements">Набор в кружок веб-разработки открыт</a></div>
+        <div class="lrow"><time>01.11</time><a href="#/announcements">График работы библиотеки в праздничные дни</a></div>
+      </div>
+      <div>
+        <div class="sec-head"><span class="sec-index">04</span><h2>Мероприятия</h2><a class="sec-all" href="#/events">Все →</a></div>
+        <div class="erow"><div class="edate"><b>14</b><span>ноя</span></div><div><b>День открытых дверей</b><small>Актовый зал · 12:00</small></div></div>
+        <div class="erow"><div class="edate"><b>20</b><span>ноя</span></div><div><b>Экскурсия на производство</b><small>Партнёр колледжа · сбор у входа</small></div></div>
+        <div class="erow"><div class="edate"><b>27</b><span>ноя</span></div><div><b>Турнир по киберспорту</b><small>Лаб. 305 · 15:30</small></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" id="about">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-index">05</span><h2>О колледже</h2></div>
+      <div class="about-grid">
+        <div>
+          <p class="quote">«Мы стремимся обеспечить студентов полноценным, качественным образованием, сделать колледж максимально комфортным для обучения и дать каждому необходимые знания, навыки и компетенции. Администрация колледжа открыта к диалогу с участниками образовательного процесса.»</p>
+          <div class="director">
+            <div class="avatar">МП</div>
+            <div><b>Михаил Анатольевич Пашковский</b><span>директор колледжа</span></div>
+          </div>
+        </div>
+        <div class="facts">
+          <div><span>Отделения</span><b>IT · Строительство</b></div>
+          <div><span>Форма обучения</span><b>очная</b></div>
+          <div><span>Приём</span><b>на базе 9 и 11 классов</b></div>
+          <div><span>Адрес</span><b>ул. Горького, 166</b></div>
+          <div><span>Сайт</span><b>kitis.ru</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec sec-alt" id="contacts">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-index">06</span><h2>Контакты</h2></div>
+      <div class="c-grid">
+        <div class="c-card"><h4>Адрес</h4><p>236029, Калининград,<br>ул. Горького, 166</p></div>
+        <div class="c-card"><h4>Телефон</h4><a href="tel:+74012916106">+7 (4012) 91-61-06</a></div>
+        <div class="c-card"><h4>Почта</h4><a href="mailto:info@kitis.ru">info@kitis.ru</a></div>
+        <div class="c-card"><h4>Часы работы</h4><p>Пн–Пт · 9:00–16:00</p></div>
+      </div>
+      <div class="map"><span class="chip mono">◈ ул. Горького, 166 · Калининград</span></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= SCHEDULE ================= -->
+<section class="page" id="page-schedule" hidden>
+  <div class="wrap">
+    <div class="pagehead">
+      <div class="crumb"><a href="#/">Главная</a> / Расписание</div>
+      <div class="pagehead-row">
+        <h1>Расписание занятий</h1>
+        <button class="btn btn-ghost btn-sm no-print" id="printBtn">Печать</button>
+      </div>
+      <div class="tabs no-print">
+        <button class="tab active" data-tab="groups">По группам</button>
+        <button class="tab" data-tab="teachers">По преподавателям</button>
+        <button class="tab" data-tab="bells">Звонки</button>
+      </div>
+    </div>
+
+    <div class="sched-bar no-print" id="groupsCtl">
+      <label for="groupSel">Группа</label>
+      <select id="groupSel"></select>
+    </div>
+    <div class="sched-bar no-print" id="teacherCtl" hidden>
+      <label for="teacherSearch">Преподаватель</label>
+      <input type="search" id="teacherSearch" placeholder="Поиск по фамилии…">
+      <select id="teacherSel"></select>
+    </div>
+
+    <div class="sched-bar no-print" id="schedShared">
+      <div class="daytabs" id="dayTabs"></div>
+      <div class="seg" id="parityBtns">
+        <button data-week="upper">Верхняя</button>
+        <button data-week="lower">Нижняя</button>
+      </div>
+    </div>
+
+    <div class="sched-meta" id="schedMeta"></div>
+    <div class="tblwrap" id="tableWrap">
+      <table>
+        <thead id="schedHead"></thead>
+        <tbody id="schedBody"></tbody>
+      </table>
+    </div>
+
+    <div id="bellsPanel" hidden>
+      <div class="tblwrap">
+        <table>
+          <thead><tr><th>Пара</th><th>Время</th><th>Перерыв после</th></tr></thead>
+          <tbody id="bellsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="demo-note">// демо-данные концепта · реальные группы и пары подключаются из источника колледжа</p>
+  </div>
+</section>
+
+<!-- ================= STUB (все пустые страницы) ================= -->
+<section class="page" id="page-stub" hidden>
+  <div class="wrap">
+    <div class="pagehead">
+      <div class="crumb"><a href="#/">Главная</a> / <span id="stubCrumb"></span></div>
+      <h1 id="stubTitle" style="font-size:clamp(1.7rem,3vw,2.3rem);font-weight:800"></h1>
+    </div>
+    <div class="stub-frame">
+      <div class="stub-inner">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        <span>в разработке</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-grid">
+    <div>
+      <div class="fbrand"><span class="brand-mark">К</span><span class="brand-name">КИТиС</span></div>
+      <p>Колледж информационных технологий и строительства. «Образование, доступное каждому!»</p>
+    </div>
+    <div>
+      <h4>Разделы</h4>
+      <a href="#/">Главная</a>
+      <a href="#/abitur">Абитуриенту</a>
+      <a href="#/schedule">Расписание</a>
+      <a href="#/news">Новости</a>
+      <a href="#/events">Мероприятия</a>
+    </div>
+    <div>
+      <h4>Ресурсы</h4>
+      <a href="#/sveden">Сведения об организации</a>
+      <a href="#/resources">Электронные ресурсы</a>
+      <a href="#/diary">Дневник «Моя школа»</a>
+      <a href="#/career">Центр карьеры</a>
+      <a href="#/copp">ЦОПП</a>
+    </div>
+    <div>
+      <h4>Контакты</h4>
+      <address>
+        236029, Калининград, ул. Горького, 166<br>
+        <a href="tel:+74012916106">+7 (4012) 91-61-06</a>
+        <a href="mailto:info@kitis.ru">info@kitis.ru</a>
+        <a href="https://vk.ru/kitis39" target="_blank" rel="noopener">ВКонтакте ↗</a>
+      </address>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    <span>© 2026 ГБУ КО ПОО «КИТиС»</span>
+    <span class="spacer"></span>
+    <a href="#/privacy">Политика конфиденциальности</a>
+    <span class="mono">концепт редизайна · не официальный сайт</span>
+  </div>
+</footer>
+
+<noscript><div class="wrap" style="padding:20px 24px">Для расписания и навигации включите JavaScript.</div></noscript>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const DAYS=[["mon","Пн"],["tue","Вт"],["wed","Ср"],["thu","Чт"],["fri","Пт"],["sat","Сб"]];
+const BELLS=[{n:1,s:"08:30",e:"10:00",br:"10 мин"},{n:2,s:"10:10",e:"11:40",br:"30 мин · обед"},{n:3,s:"12:10",e:"13:40",br:"10 мин"},{n:4,s:"13:50",e:"15:20",br:"10 мин"},{n:5,s:"15:30",e:"17:00",br:"—"}];
+const L=(p,subj,t,r,w="both")=>({p,subj,t,r,w});
+const GROUPS=[
+ {id:"is231",n:"ИС-231",full:"Информационные системы и программирование"},
+ {id:"is241",n:"ИС-241",full:"Информационные системы и программирование"},
+ {id:"ss221",n:"СС-221",full:"Сетевое и системное администрирование"},
+ {id:"st231",n:"СТ-231",full:"Строительство и эксплуатация зданий и сооружений"},
+ {id:"st241",n:"СТ-241",full:"Строительство и эксплуатация зданий и сооружений"}
+];
+const SCH={
+ is231:{
+  mon:[L(1,"Математика","Смирнова Е. Н.","204"),L(2,"Программирование на Python","Ковалёв Д. И.","301"),L(3,"Базы данных","Ковалёв Д. И.","301"),L(4,"Английский язык","Новикова Т. А.","112")],
+  tue:[L(1,"WEB-разработка","Григорьев С. К.","305"),L(2,"WEB-разработка","Григорьев С. К.","305"),L(3,"Физкультура","Соколов П. Р.","с/з"),L(4,"История России","Лебедева О. В.","118")],
+  wed:[L(1,"Операционные системы","Петров А. В.","302","upper"),L(1,"Компьютерные сети","Петров А. В.","302","lower"),L(2,"Операционные системы","Петров А. В.","302"),L(3,"Математика","Смирнова Е. Н.","204")],
+  thu:[L(1,"Базы данных","Ковалёв Д. И.","301"),L(2,"Программирование на Python","Ковалёв Д. И.","301"),L(3,"Английский язык","Новикова Т. А.","112"),L(4,"Охрана труда","Григорьев С. К.","210")],
+  fri:[L(1,"Компьютерные сети","Петров А. В.","302"),L(2,"Математика","Смирнова Е. Н.","204"),L(3,"Проектная деятельность","Ковалёв Д. И.","301")],
+  sat:[]},
+ is241:{
+  mon:[L(1,"Информатика","Петров А. В.","301"),L(2,"Математика","Смирнова Е. Н.","204"),L(3,"История России","Лебедева О. В.","118")],
+  tue:[L(1,"Английский язык","Новикова Т. А.","112"),L(2,"Информатика","Петров А. В.","301"),L(3,"Физкультура","Соколов П. Р.","с/з"),L(4,"Русский язык","Лебедева О. В.","118")],
+  wed:[L(1,"Математика","Смирнова Е. Н.","204"),L(2,"Основы алгоритмизации","Ковалёв Д. И.","301"),L(3,"Информатика","Петров А. В.","301")],
+  thu:[L(1,"История России","Лебедева О. В.","118"),L(2,"Математика","Смирнова Е. Н.","204"),L(3,"Английский язык","Новикова Т. А.","112")],
+  fri:[L(1,"Основы алгоритмизации","Ковалёв Д. И.","301"),L(2,"Физкультура","Соколов П. Р.","с/з"),L(3,"Классный час","Лебедева О. В.","118")],
+  sat:[]},
+ ss221:{
+  mon:[L(1,"Компьютерные сети","Петров А. В.","302"),L(2,"Сетевое администрирование","Петров А. В.","302"),L(3,"Математика","Смирнова Е. Н.","204")],
+  tue:[L(1,"Английский язык","Новикова Т. А.","112"),L(2,"Операционные системы","Петров А. В.","302"),L(3,"WEB-разработка","Григорьев С. К.","305"),L(4,"Физкультура","Соколов П. Р.","с/з")],
+  wed:[L(1,"Сетевое администрирование","Петров А. В.","302"),L(2,"Базы данных","Ковалёв Д. И.","301"),L(3,"История России","Лебедева О. В.","118")],
+  thu:[L(1,"Электротехника","Григорьев С. К.","210","upper"),L(1,"Охрана труда","Григорьев С. К.","210","lower"),L(2,"Компьютерные сети","Петров А. В.","302"),L(3,"Математика","Смирнова Е. Н.","204")],
+  fri:[L(1,"WEB-разработка","Григорьев С. К.","305"),L(2,"Английский язык","Новикова Т. А.","112"),L(3,"Сетевое администрирование","Петров А. В.","302")],
+  sat:[L(1,"Факультатив: кибербезопасность","Петров А. В.","302")]},
+ st231:{
+  mon:[L(1,"Инженерная графика","Григорьев С. К.","210"),L(2,"Строительные материалы","Иванова М. С.","208"),L(3,"Математика","Смирнова Е. Н.","204")],
+  tue:[L(1,"Геодезия","Иванова М. С.","208"),L(2,"Геодезия (практика)","Иванова М. С.","полигон"),L(3,"Английский язык","Новикова Т. А.","112"),L(4,"Физкультура","Соколов П. Р.","с/з")],
+  wed:[L(1,"Технология строительных процессов","Иванова М. С.","208"),L(2,"Инженерная графика","Григорьев С. К.","210"),L(3,"История России","Лебедева О. В.","118")],
+  thu:[L(1,"Строительные материалы","Иванова М. С.","208"),L(2,"Математика","Смирнова Е. Н.","204"),L(3,"Охрана труда","Григорьев С. К.","210")],
+  fri:[L(1,"Геодезия (практика)","Иванова М. С.","полигон"),L(2,"Инженерная графика","Григорьев С. К.","210"),L(3,"Строительные материалы","Иванова М. С.","208","upper"),L(3,"Технология отделочных работ","Иванова М. С.","208","lower")],
+  sat:[]},
+ st241:{
+  mon:[L(1,"Математика","Смирнова Е. Н.","204"),L(2,"Инженерная графика","Григорьев С. К.","210"),L(3,"Информатика","Петров А. В.","301")],
+  tue:[L(1,"Строительные материалы","Иванова М. С.","208"),L(2,"История России","Лебедева О. В.","118"),L(3,"Английский язык","Новикова Т. А.","112")],
+  wed:[L(1,"Физкультура","Соколов П. Р.","с/з"),L(2,"Инженерная графика","Григорьев С. К.","210"),L(3,"Математика","Смирнова Е. Н.","204")],
+  thu:[L(1,"Информатика","Петров А. В.","301"),L(2,"Строительные материалы","Иванова М. С.","208"),L(3,"Русский язык","Лебедева О. В.","118")],
+  fri:[L(1,"Геодезия","Иванова М. С.","208"),L(2,"Математика","Смирнова Е. Н.","204"),L(3,"Классный час","Иванова М. С.","208")],
+  sat:[]}
+};
+const TEACHERS=[...new Set(Object.values(SCH).flatMap(g=>Object.values(g).flat().map(l=>l.t)))].sort((a,b)=>a.localeCompare(b,"ru"));
+function isoWeek(d){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const dn=(t.getUTCDay()+6)%7;t.setUTCDate(t.getUTCDate()-dn+3);const f=new Date(Date.UTC(t.getUTCFullYear(),0,4));return 1+Math.round(((t-f)/864e5-3+((f.getUTCDay()+6)%7))/7);}
+const now=new Date(),jsDay=now.getDay();
+const state={tab:"groups",group:"is231",teacher:TEACHERS[0],day:jsDay===0?"mon":DAYS[jsDay-1][0],week:isoWeek(now)%2?"upper":"lower"};
+let pendingTab=null;
+const visible=l=>l.w==="both"||l.w===state.week;
+const bell=p=>BELLS[p-1]?BELLS[p-1].s+" – "+BELLS[p-1].e:"—";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const STUBS={abitur:"Абитуриенту",apply:"Заявка на поступление",sveden:"Сведения об образовательной организации",career:"Центр карьеры",copp:"ЦОПП",monitoring:"Аккредитационный мониторинг",video:"Видео",photo:"Фотогалерея",calendar:"Календарь",resources:"Электронные ресурсы",diary:"Дневник «Моя школа»",news:"Все новости",announcements:"Все объявления",events:"Все мероприятия",privacy:"Политика конфиденциальности"};
+function groupOptions(sel){sel.innerHTML=GROUPS.map(g=>`<option value="${g.id}">${g.n} — ${g.full}</option>`).join("");sel.value=state.group;}
+function teacherOptions(){
+ const q=$("#teacherSearch").value.trim().toLowerCase();
+ const list=TEACHERS.filter(t=>t.toLowerCase().includes(q));
+ const sel=$("#teacherSel");
+ if(list.length){sel.innerHTML=list.map(t=>`<option>${esc(t)}</option>`).join("");if(!list.includes(state.teacher))state.teacher=list[0];sel.value=state.teacher;}
+ else{sel.innerHTML=`<option value="">Ничего не найдено</option>`;state.teacher="";}
+}
+function renderDayTabs(){$("#dayTabs").innerHTML=DAYS.map(([id,n])=>`<button class="daytab${state.day===id?" active":""}" data-day="${id}">${n}</button>`).join("");}
+function renderParity(){$$("#parityBtns button").forEach(b=>b.classList.toggle("active",b.dataset.week===state.week));}
+function groupRows(){return SCH[state.group][state.day].filter(visible).sort((a,b)=>a.p-b.p).map(l=>`<tr><td class="mono nowrap">${l.p} пара</td><td class="mono nowrap">${bell(l.p)}</td><td class="subj">${esc(l.subj)}${l.w!=="both"?` <span class="wchip">${l.w==="upper"?"верхн.":"нижн."}</span>`:""}</td><td>${esc(l.t)}</td><td><span class="room mono">${esc(l.r)}</span></td></tr>`).join("");}
+function teacherRows(){const rows=[];for(const g of GROUPS){for(const l of SCH[g.id][state.day]){if(l.t===state.teacher&&visible(l))rows.push({g:g.n,l});}}rows.sort((a,b)=>a.l.p-b.l.p);return rows.map(({g,l})=>`<tr><td class="mono nowrap">${l.p} пара</td><td class="mono nowrap">${bell(l.p)}</td><td><span class="room mono">${g}</span></td><td class="subj">${esc(l.subj)}</td><td><span class="room mono">${esc(l.r)}</span></td></tr>`).join("");}
+function render(){
+ const bells=state.tab==="bells";
+ $("#bellsPanel").hidden=!bells;$("#tableWrap").hidden=bells;
+ $("#groupsCtl").hidden=state.tab!=="groups";$("#teacherCtl").hidden=state.tab!=="teachers";
+ $("#schedShared").hidden=bells;$("#schedMeta").hidden=bells;
+ $$(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===state.tab));
+ if(bells)return;
+ renderDayTabs();renderParity();
+ const dayName=DAYS.find(d=>d[0]===state.day)[1];
+ const weekName=state.week==="upper"?"верхняя неделя (числитель)":"нижняя неделя (знаменатель)";
+ let head,rows,meta;
+ if(state.tab==="groups"){const g=GROUPS.find(x=>x.id===state.group);head=`<tr><th>Пара</th><th>Время</th><th>Дисциплина</th><th>Преподаватель</th><th>Кабинет</th></tr>`;rows=groupRows();meta=`${g.n} · ${g.full} — ${dayName}, ${weekName}`;}
+ else{head=`<tr><th>Пара</th><th>Время</th><th>Группа</th><th>Дисциплина</th><th>Кабинет</th></tr>`;rows=teacherRows();meta=`${state.teacher||"—"} — ${dayName}, ${weekName}`;}
+ $("#schedHead").innerHTML=head;
+ $("#schedBody").innerHTML=rows||`<tr><td colspan="5" class="empty mono">нет занятий</td></tr>`;
+ $("#schedMeta").textContent=meta;
+}
+function renderHome(){
+ const sel=$("#homeGroup");const rows=SCH[sel.value][state.day].filter(visible).sort((a,b)=>a.p-b.p);
+ $("#homeBody").innerHTML=rows.map(l=>`<tr><td class="mono nowrap">${bell(l.p)}</td><td class="subj">${esc(l.subj)}</td><td><span class="room mono">${esc(l.r)}</span></td></tr>`).join("")||`<tr><td colspan="3" class="empty mono">нет занятий</td></tr>`;
+ const d=new Date(now);if(jsDay===0)d.setDate(d.getDate()+1);
+ $("#homeDate").textContent=d.toLocaleDateString("ru-RU",{weekday:"long",day:"numeric",month:"long"})+(jsDay===0?" · ближайший учебный день":"");
+}
+function route(){
+ let h=location.hash.replace(/^#\/?/,"")||"home";
+ $$(".page").forEach(p=>p.hidden=true);
+ if(h==="home")$("#page-home").hidden=false;
+ else if(h==="schedule"){$("#page-schedule").hidden=false;if(pendingTab){state.tab=pendingTab;pendingTab=null;}render();}
+ else if(STUBS[h]){$("#page-stub").hidden=false;$("#stubTitle").textContent=STUBS[h];$("#stubCrumb").textContent=STUBS[h];}
+ else{$("#page-home").hidden=false;h="home";}
+ $$("[data-route]").forEach(a=>a.classList.toggle("active",a.dataset.route===h));
+ $("#ddBtn").classList.toggle("active",$$("#dd [data-route]").some(a=>a.dataset.route===h));
+ $("#nav").classList.remove("open");$("#burger").setAttribute("aria-expanded","false");
+ $("#dd").classList.remove("open");
+ window.scrollTo(0,0);
+}
+function init(){
+ groupOptions($("#groupSel"));groupOptions($("#homeGroup"));
+ $("#homeGroup").addEventListener("change",renderHome);
+ $("#groupSel").addEventListener("change",e=>{state.group=e.target.value;render();});
+ teacherOptions();
+ $("#teacherSel").addEventListener("change",e=>{state.teacher=e.target.value;render();});
+ $("#teacherSearch").addEventListener("input",()=>{teacherOptions();render();});
+ $("#dayTabs").addEventListener("click",e=>{const b=e.target.closest("[data-day]");if(b){state.day=b.dataset.day;render();}});
+ $("#parityBtns").addEventListener("click",e=>{const b=e.target.closest("[data-week]");if(b){state.week=b.dataset.week;render();renderHome();}});
+ $$(".tab").forEach(t=>t.addEventListener("click",()=>{state.tab=t.dataset.tab;render();}));
+ $("#bellsBody").innerHTML=BELLS.map(b=>`<tr><td class="mono">${b.n} пара</td><td class="mono nowrap">${b.s} – ${b.e}</td><td>${b.br}</td></tr>`).join("");
+ $("#printBtn").addEventListener("click",()=>window.print());
+ $$("[data-tab-link]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();pendingTab=a.dataset.tabLink;if(location.hash==="#/schedule")route();else location.hash="#/schedule";}));
+ $$("[data-scroll]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();const go=()=>{const el=document.getElementById(a.dataset.scroll);if(el)el.scrollIntoView({behavior:"smooth"});};if(location.hash&&location.hash!=="#/"&&location.hash!=="#"){location.hash="#/";setTimeout(go,80);}else go();}));
+ $("#burger").addEventListener("click",()=>{const o=$("#nav").classList.toggle("open");$("#burger").setAttribute("aria-expanded",o);});
+ $("#ddBtn").addEventListener("click",e=>{e.stopPropagation();$("#dd").classList.toggle("open");});
+ document.addEventListener("click",e=>{if(!e.target.closest("#dd"))$("#dd").classList.remove("open");});
+ const sizes=["","fs-m","fs-l"],labels=["А+","А+","А−"];let fi=0;
+ $("#fontBtn").addEventListener("click",()=>{fi=(fi+1)%3;document.documentElement.className=sizes[fi];$("#fontBtn").textContent=labels[fi];});
+ window.addEventListener("hashchange",route);
+ renderHome();route();
+}
+document.addEventListener("DOMContentLoaded",init);
+</script>
+</body>
+</html>
